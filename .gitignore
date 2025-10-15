@@ -1,0 +1,24 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Django
+/staticfiles/
+media/
+
+# Env
+*.env
+
+# Node
+node_modules/
+dist/
+.idea/
+.vscode/
+.DS_Store
+
+# Vite
+frontend/.vite/
