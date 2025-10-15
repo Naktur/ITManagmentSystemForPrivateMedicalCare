@@ -47,7 +47,8 @@ export default function AppointmentForm() {
       <select name="patient" value={formData.patient} onChange={handleChange} required>
         <option value="">-- wybierz --</option>
         {patients.map((p) => (
-          <option key={p.id} value={p.id}>{p.full_name}</option>
+          <option key={p.id} value={p.id}>{p.full_name || p.full_name}</option>
+
         ))}
       </select>
 
@@ -55,7 +56,7 @@ export default function AppointmentForm() {
       <select name="doctor" value={formData.doctor} onChange={handleChange} required>
         <option value="">-- wybierz --</option>
         {doctors.map((d) => (
-          <option key={d.id} value={d.id}>{d.full_name}</option>
+          <option key={d.id} value={d.id}>{d.full_name || d.full_name}</option>
         ))}
       </select>
 
