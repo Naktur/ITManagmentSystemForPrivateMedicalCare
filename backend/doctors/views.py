@@ -3,14 +3,10 @@ from .models import Doctor
 from .serializers import DoctorSerializer
 
 class DoctorViewSet(viewsets.ModelViewSet):
-    """
-    Pełny CRUD lekarzy.
-    """
-    queryset = Doctor.objects.all()
+    queryset = Doctor.objects.select_related("user").all()
     serializer_class = DoctorSerializer
     permission_classes = [permissions.IsAuthenticated]
-
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['full_name', 'specialization']
-    ordering_fields = ['full_name', 'created_at']
-    ordering = ['full_name']
+    search_fields = ["user__first_name", "user__last_name", "specialization"]
+    ordering_fields = ["user__last_name", "created_at"]
+    ordering = ["user__last_name"]

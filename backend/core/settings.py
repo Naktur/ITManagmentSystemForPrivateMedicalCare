@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "mssql",
-        "NAME": "ITManagmentSystemForPrivateMedicalCare",
+        "NAME": "ManagmentSystemForPrivateMedicalCare",
         "USER": "sa",
         "PASSWORD": "sapassword",
         "HOST": "localhost",

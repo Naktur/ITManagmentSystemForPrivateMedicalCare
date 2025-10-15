@@ -1,20 +1,19 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Patient(models.Model):
     """
-    Podstawowy model Pacjenta do rejestracji wizyt.
+    Każdy pacjent to dokładnie jeden użytkownik (OneToOneField).
     """
-    first_name = models.CharField(max_length=120)
-    last_name = models.CharField(max_length=120)
-    pesel = models.CharField(max_length=11, blank=True)  # opcjonalnie
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="patient_profile")
+    pesel = models.CharField(max_length=11, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     phone = models.CharField(max_length=32, blank=True)
     email = models.EmailField(blank=True)
-
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['last_name', 'first_name']
+        ordering = ["user__last_name"]
 
     def __str__(self):
-        return f"{self.last_name} {self.first_name}".strip()
+        return f"{self.user.first_name} {self.user.last_name}"

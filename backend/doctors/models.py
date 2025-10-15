@@ -3,16 +3,15 @@ from django.contrib.auth.models import User
 
 class Doctor(models.Model):
     """
-    Lekarz może (ale nie musi) być powiązany z kontem User (np. do logowania).
+    Każdy lekarz to dokładnie jeden użytkownik (OneToOneField).
     """
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='doctors')
-    full_name = models.CharField(max_length=200)  # cache nazwy (np. "dr Jan Kowalski")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="doctor_profile")
     specialization = models.CharField(max_length=200, blank=True)
-
+    phone = models.CharField(max_length=50, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['full_name']
+        ordering = ["user__last_name"]
 
     def __str__(self):
-        return self.full_name
+        return f"dr {self.user.first_name} {self.user.last_name}".strip()
