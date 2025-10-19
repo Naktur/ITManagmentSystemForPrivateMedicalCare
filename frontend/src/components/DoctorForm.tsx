@@ -21,43 +21,44 @@ export default function DoctorForm({ onCreated }: DoctorFormProps) {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      // 1️⃣ tworzymy usera (rejestracja nie wymaga tokena)
-      const userRes = await api.post("/auth/register/", {
-        username: formData.username,
-        email: formData.email,
-        first_name: formData.first_name,
-        last_name: formData.last_name,
-        password: formData.password,
-      });
+  try {
+    // 1️⃣ Tworzymy użytkownika
+    const userRes = await api.post("/auth/register/", {
+      username: formData.username,
+      email: formData.email,
+      first_name: formData.first_name,
+      last_name: formData.last_name,
+      password: formData.password,
+    });
 
-      const userId = userRes.data.id;
+    const userId = userRes.data.id; // ⬅️ bierzemy id użytkownika
 
-      // 2️⃣ tworzymy lekarza (tu potrzebny token)
-      await api.post("/doctors/", {
-        user_id: userId,
-        phone: formData.phone,
-        specialization: formData.specialization,
-      });
+    // 2️⃣ Tworzymy lekarza z przypisanym user_id
+    await api.post("/doctors/", {
+      user_id: userId, // ⬅️ przekazujemy user_id do backendu
+      phone: formData.phone,
+      specialization: formData.specialization,
+    });
 
-      alert("Lekarz został dodany ✅");
-      setFormData({
-        username: "",
-        email: "",
-        first_name: "",
-        last_name: "",
-        phone: "",
-        specialization: "",
-        password: "",
-      });
-      onCreated();
-    } catch (err) {
-      console.error(err);
-      alert("Błąd podczas dodawania lekarza");
-    }
-  };
+    alert("Lekarz został dodany ✅");
+    setFormData({
+      username: "",
+      email: "",
+      first_name: "",
+      last_name: "",
+      phone: "",
+      specialization: "",
+      password: "",
+    });
+    onCreated();
+  } catch (err) {
+    console.error("Błąd podczas dodawania lekarza:", err);
+    alert("Błąd podczas dodawania lekarza");
+  }
+};
+
 
   return (
     <form onSubmit={handleSubmit} className="bg-white shadow rounded p-4 space-y-3">

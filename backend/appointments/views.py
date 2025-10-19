@@ -15,3 +15,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     search_fields = ['notes', 'status']
     ordering_fields = ['scheduled_at', 'created_at', 'status']
     ordering = ['-scheduled_at']
+
+    def update(self, request, *args, **kwargs):
+        kwargs["partial"] = True  # ✅ pozwól na częściową aktualizację
+        return super().update(request, *args, **kwargs)

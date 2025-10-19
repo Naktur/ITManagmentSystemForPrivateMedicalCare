@@ -15,3 +15,12 @@ class Doctor(models.Model):
 
     def __str__(self):
         return f"dr {self.user.first_name} {self.user.last_name}".strip()
+
+    def delete(self, *args, **kwargs):
+        """
+        Przy usuwaniu lekarza usuń też powiązanego użytkownika.
+        """
+        user = self.user
+        super().delete(*args, **kwargs)
+        if user:
+            user.delete()

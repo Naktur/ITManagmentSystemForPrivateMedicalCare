@@ -1,22 +1,28 @@
 from rest_framework import serializers
 from .models import Appointment
-from patients.serializers import PatientSerializer
-from doctors.serializers import DoctorSerializer
 
 class AppointmentSerializer(serializers.ModelSerializer):
-    # Zagnieżdżone wersje (read-only) + proste ID do tworzenia/edycji
-    patient_detail = PatientSerializer(source='patient', read_only=True)
-    doctor_detail = DoctorSerializer(source='doctor', read_only=True)
+    patient_name = serializers.CharField(source="patient.user.get_full_name", read_only=True)
+    doctor_name = serializers.CharField(source="doctor.user.get_full_name", read_only=True)
 
     class Meta:
         model = Appointment
         fields = [
-            'id',
-            'patient', 'patient_detail',
-            'doctor', 'doctor_detail',
-            'scheduled_at',
-            'status',
-            'notes',
-            'created_at',
+            "id",
+            "patient",
+            "patient_name",
+            "doctor",
+            "doctor_name",
+            "scheduled_at",
+            "status",
+            "notes",
+            "created_at",
         ]
-        read_only_fields = ['created_at']
+        read_only_fields = ["created_at"]
+
+    def update(self, instance, validated_data):
+        # Pozwala na aktualizację tylko wybranych pól
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
