@@ -8,6 +8,7 @@ interface Appointment {
   scheduled_at: string;
   status: string;
   notes: string;
+  diagnosis?: string;
 }
 
 export default function AppointmentList() {
@@ -17,6 +18,7 @@ export default function AppointmentList() {
     scheduled_at: "",
     status: "",
     notes: "",
+    diagnosis: "",
   });
 
   const load = async () => {
@@ -34,6 +36,7 @@ export default function AppointmentList() {
       scheduled_at: a.scheduled_at,
       status: a.status,
       notes: a.notes,
+      diagnosis: a.diagnosis || "",
     });
   };
 
@@ -91,6 +94,7 @@ export default function AppointmentList() {
             <th className="p-2">Pacjent</th>
             <th className="p-2">Lekarz</th>
             <th className="p-2">Data</th>
+            <th className="p-2">Diagnoza</th> 
             <th className="p-2">Status</th>
             <th className="p-2">Notatki</th>
             <th className="p-2 text-center">Akcje</th>
@@ -110,6 +114,7 @@ export default function AppointmentList() {
               <td className="p-2">{a.patient_name}</td>
               <td className="p-2">{a.doctor_name}</td>
               <td className="p-2">{formatDate(a.scheduled_at)}</td>
+              <td className="p-2">{a.diagnosis || "-"}</td>
               <td className="p-2">{renderStatusBadge(a.status)}</td>
               <td className="p-2">{a.notes || "-"}</td>
               <td className="p-2 flex justify-center gap-2">
@@ -172,6 +177,18 @@ export default function AppointmentList() {
                 className="border p-2 rounded w-full"
               />
             </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium mb-1">Diagnoza</label>
+              <input
+                type="text"
+                name="diagnosis"
+                value={form.diagnosis || ""}
+                onChange={(e) => setForm({ ...form, diagnosis: e.target.value })}
+                className="border p-2 rounded w-full"
+              />
+            </div>
+
 
             <div className="col-span-2 flex justify-end gap-2">
               <button

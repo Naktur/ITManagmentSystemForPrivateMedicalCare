@@ -1,26 +1,49 @@
-// frontend/src/components/AppointmentForm.tsx
 import React, { useEffect, useState } from "react";
 import api from "../api/axiosConfig";
 
 interface Patient {
   id: number;
-  full_name: string; // <-- teraz na pewno przychodzi z API
+  full_name: string;
 }
 
 interface Doctor {
   id: number;
-  full_name: string; // <-- jw.
+  full_name: string;
 }
 
-export default function AppointmentForm() {
+interface AppointmentFormProps {
+  onCreated: () => void;
+}
+
+export default function AppointmentForm({ onCreated }: AppointmentFormProps) {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [form, setForm] = useState({
     patient: "",
     doctor: "",
     scheduled_at: "",
+    diagnosis: "",
     notes: "",
   });
+
+  // Lista przykładowych chorób (do podpowiedzi)
+  const diseaseSuggestions = [
+    "Grypa",
+    "COVID-19",
+    "Angina",
+    "Zapalenie płuc",
+    "Migrena",
+    "Alergia",
+    "Cukrzyca",
+    "Nadciśnienie",
+    "Choroba wieńcowa",
+    "Depresja",
+    "Astma",
+    "Refluks żołądkowy",
+  ];
+
+  const [filteredDiseases, setFilteredDiseases] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const loadData = async () => {
     try {
@@ -42,18 +65,40 @@ export default function AppointmentForm() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+
+    // Jeśli wpisywane jest "diagnosis" — pokaż sugestie
+    if (name === "diagnosis") {
+      const filtered = diseaseSuggestions.filter((d) =>
+        d.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredDiseases(filtered.slice(0, 5));
+      setShowSuggestions(value.length > 0 && filtered.length > 0);
+    }
+  };
+
+  const handleSelectSuggestion = (disease: string) => {
+    setForm({ ...form, diagnosis: disease });
+    setShowSuggestions(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await api.post("/appointments/", form);
-      setForm({ patient: "", doctor: "", scheduled_at: "", notes: "" });
-      loadData();
+      alert("✅ Wizyta została dodana!");
+      setForm({
+        patient: "",
+        doctor: "",
+        scheduled_at: "",
+        diagnosis: "",
+        notes: "",
+      });
+      onCreated();
     } catch (err) {
       console.error("Błąd zapisu wizyty:", err);
-      alert("Nie udało się zapisać wizyty");
+      alert("❌ Nie udało się zapisać wizyty.");
     }
   };
 
@@ -61,7 +106,7 @@ export default function AppointmentForm() {
     <div className="bg-white rounded shadow p-5 max-w-3xl">
       <h3 className="text-lg font-semibold mb-4">Nowa wizyta</h3>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4 relative">
         <div>
           <label className="block text-sm font-medium mb-1">Pacjent:</label>
           <select
@@ -69,8 +114,9 @@ export default function AppointmentForm() {
             value={form.patient}
             onChange={handleChange}
             className="border rounded w-full p-2"
+            required
           >
-            <option value="">-- wybierz --</option>
+            <option value="">-- wybierz pacjenta --</option>
             {patients.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.full_name}
@@ -86,8 +132,9 @@ export default function AppointmentForm() {
             value={form.doctor}
             onChange={handleChange}
             className="border rounded w-full p-2"
+            required
           >
-            <option value="">-- wybierz --</option>
+            <option value="">-- wybierz lekarza --</option>
             {doctors.map((d) => (
               <option key={d.id} value={d.id}>
                 {d.full_name}
@@ -97,14 +144,42 @@ export default function AppointmentForm() {
         </div>
 
         <div className="col-span-2">
-          <label className="block text-sm font-medium mb-1">Termin:</label>
+          <label className="block text-sm font-medium mb-1">Termin wizyty:</label>
           <input
             type="datetime-local"
             name="scheduled_at"
             value={form.scheduled_at}
             onChange={handleChange}
             className="border rounded w-full p-2"
+            required
           />
+        </div>
+
+        {/* NOWE POLE: Diagnoza */}
+        <div className="col-span-2 relative">
+          <label className="block text-sm font-medium mb-1">Diagnoza:</label>
+          <input
+            type="text"
+            name="diagnosis"
+            placeholder="np. Grypa, Angina..."
+            value={form.diagnosis}
+            onChange={handleChange}
+            className="border rounded w-full p-2"
+          />
+          {/* Sugestie podpowiedzi */}
+          {showSuggestions && (
+            <ul className="absolute bg-white border rounded shadow-md w-full mt-1 z-10">
+              {filteredDiseases.map((disease) => (
+                <li
+                  key={disease}
+                  onClick={() => handleSelectSuggestion(disease)}
+                  className="p-2 hover:bg-gray-100 cursor-pointer"
+                >
+                  {disease}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="col-span-2">

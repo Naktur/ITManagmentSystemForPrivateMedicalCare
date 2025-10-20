@@ -5,6 +5,7 @@ import DoctorsPage from "./DoctorsPage";
 import PatientsPage from "./PatientsPage";
 import SettingsPage from "./SettingsPage";
 import OverviewPage from "./OverviewPage";
+import StatisticsPage from "./StatisticsPage";
 
 export default function Dashboard() {
   return (
@@ -15,6 +16,7 @@ export default function Dashboard() {
         <Route path="appointments" element={<AppointmentsPage />} />
         <Route path="doctors" element={<DoctorsPage />} />
         <Route path="patients" element={<PatientsPage />} />
+        <Route path="statistics" element={<StatisticsPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Routes>
     </Layout>

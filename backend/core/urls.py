@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from analytics.views import StatsOverviewView
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -31,5 +31,6 @@ urlpatterns = [
     path('api/patients/', include('patients.urls')),
     path('api/doctors/', include('doctors.urls')),
     path('api/appointments/', include('appointments.urls')),
+     path("api/stats/overview/", StatsOverviewView.as_view()),
 
 ]

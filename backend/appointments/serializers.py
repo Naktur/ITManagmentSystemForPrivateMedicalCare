@@ -9,19 +9,15 @@ class AppointmentSerializer(serializers.ModelSerializer):
         model = Appointment
         fields = [
             "id",
-            "patient",
-            "patient_name",
-            "doctor",
-            "doctor_name",
-            "scheduled_at",
-            "status",
-            "notes",
-            "created_at",
+            "patient", "patient_name",
+            "doctor", "doctor_name",
+            "scheduled_at", "status",
+            "diagnosis",
+            "notes", "created_at",
         ]
         read_only_fields = ["created_at"]
 
     def update(self, instance, validated_data):
-        # Pozwala na aktualizację tylko wybranych pól
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
