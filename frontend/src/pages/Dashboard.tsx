@@ -6,6 +6,7 @@ import PatientsPage from "./PatientsPage";
 import SettingsPage from "./SettingsPage";
 import OverviewPage from "./OverviewPage";
 import StatisticsPage from "./StatisticsPage";
+import ChatPage from "./ChatPage";
 
 export default function Dashboard() {
   return (
@@ -17,7 +18,9 @@ export default function Dashboard() {
         <Route path="doctors" element={<DoctorsPage />} />
         <Route path="patients" element={<PatientsPage />} />
         <Route path="statistics" element={<StatisticsPage />} />
+        <Route path="chat" element={<ChatPage />} />
         <Route path="settings" element={<SettingsPage />} />
+        
       </Routes>
     </Layout>
   );
