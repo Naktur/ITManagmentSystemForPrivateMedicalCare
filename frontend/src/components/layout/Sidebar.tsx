@@ -7,6 +7,7 @@ const navItems = [
   { path: "/dashboard/overview", label: "Dashboard", icon: "🏠" },
   { path: "/dashboard/appointments", label: "Wizyty", icon: "📅" },
   { path: "/dashboard/doctors", label: "Lekarze", icon: "👨‍⚕️" },
+  { path: "/dashboard/receptionists", label: "Recepcjonistki", icon: "🧑‍💼" },
   { path: "/dashboard/patients", label: "Pacjenci", icon: "🧍‍♂️" },
   { path: "/dashboard/statistics", label: "Statystyki", icon: "📊" },
   { path: "/dashboard/chat", label: "Chat", icon: "💬" },

@@ -32,7 +32,8 @@ urlpatterns = [
     path('api/doctors/', include('doctors.urls')),
     path('api/appointments/', include('appointments.urls')),
     path("api/stats/overview/", StatsOverviewView.as_view()),
-    path("api/", include("chat.urls")),  
+    path("api/", include("chat.urls")),
+    path("api/receptionists/", include("receptionists.urls")),
 
 
 ]
