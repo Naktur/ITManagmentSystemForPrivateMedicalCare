@@ -18,6 +18,12 @@ export default function OverviewPage() {
   });
   const [upcomingAppointments, setUpcomingAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedRole = localStorage.getItem("userRole");
+    setRole(storedRole);
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -70,31 +76,47 @@ export default function OverviewPage() {
     return <div className="text-center text-gray-500 mt-10">Ładowanie danych...</div>;
   }
 
+  const titleByRole: Record<string, string> = {
+    admin: "Panel administratora",
+    doctor: "Panel lekarza",
+    receptionist: "Panel recepcjonistki",
+    patient: "Panel pacjenta",
+  };
+
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold mb-4">Panel administratora</h1>
+      <h1 className="text-2xl font-semibold mb-4">
+        {titleByRole[role || "admin"] || "Panel"}
+      </h1>
 
       {/* Statystyki */}
       <div className="grid grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded shadow text-center">
-          <p className="text-3xl font-bold text-sky-600">{counts.patients}</p>
-          <p className="text-gray-600">Pacjenci</p>
-        </div>
+        {/* Pokazuj statystyki zależnie od roli */}
+        {(role === "admin" || role === "receptionist") && (
+          <>
+            <div className="bg-white p-5 rounded shadow text-center">
+              <p className="text-3xl font-bold text-sky-600">{counts.patients}</p>
+              <p className="text-gray-600">Pacjenci</p>
+            </div>
+            <div className="bg-white p-5 rounded shadow text-center">
+              <p className="text-3xl font-bold text-green-600">{counts.doctors}</p>
+              <p className="text-gray-600">Lekarze</p>
+            </div>
+          </>
+        )}
 
-        <div className="bg-white p-5 rounded shadow text-center">
-          <p className="text-3xl font-bold text-green-600">{counts.doctors}</p>
-          <p className="text-gray-600">Lekarze</p>
-        </div>
-
-        <div className="bg-white p-5 rounded shadow text-center">
-          <p className="text-3xl font-bold text-indigo-600">{counts.appointments}</p>
-          <p className="text-gray-600">Wizyty</p>
-        </div>
-
-        <div className="bg-white p-5 rounded shadow text-center">
-          <p className="text-3xl font-bold text-orange-500">{counts.upcoming}</p>
-          <p className="text-gray-600">Nadchodzące wizyty</p>
-        </div>
+        {(role === "doctor" || role === "patient" || role === "admin" || role === "receptionist") && (
+          <>
+            <div className="bg-white p-5 rounded shadow text-center">
+              <p className="text-3xl font-bold text-indigo-600">{counts.appointments}</p>
+              <p className="text-gray-600">Wizyty</p>
+            </div>
+            <div className="bg-white p-5 rounded shadow text-center">
+              <p className="text-3xl font-bold text-orange-500">{counts.upcoming}</p>
+              <p className="text-gray-600">Nadchodzące wizyty</p>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Nadchodzące wizyty */}

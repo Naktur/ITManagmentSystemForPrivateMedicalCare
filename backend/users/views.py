@@ -1,9 +1,11 @@
-from rest_framework import permissions, views, response
+from rest_framework import permissions, views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.contrib.auth.models import User
 from .serializers import MeSerializer, RegisterSerializer
 from rest_framework import generics, status
 from rest_framework.response import Response
+from .utils import get_user_role
+
 # Używamy gotowych widoków SimpleJWT do /login i /refresh
 class LoginView(TokenObtainPairView):
     """
@@ -24,7 +26,10 @@ class MeView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        return response.Response(MeSerializer(request.user).data)
+        user = request.user
+        data = MeSerializer(user).data
+        data["role"] = get_user_role(user)  # ⬅️ dodajemy pole role
+        return Response(data)
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
